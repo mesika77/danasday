@@ -23,6 +23,8 @@ body {
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
+  /* Prevent pull-to-refresh interfering with scroll snapping */
+  overscroll-behavior-y: contain;
 }
 
 h1, h2, h3 {
@@ -32,4 +34,11 @@ h1, h2, h3 {
 button {
   cursor: pointer;
   font-family: inherit;
+  /* Minimum tap target on mobile */
+  min-height: 44px;
+}
+
+/* Restore compact buttons that intentionally use smaller heights */
+@media (max-width: 640px) {
+  button { min-height: 36px; }
 }

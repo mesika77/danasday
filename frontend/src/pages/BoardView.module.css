@@ -80,3 +80,38 @@
   font-size: 0.95rem;
   padding: 2rem;
 }
+
+@media (max-width: 640px) {
+  .toolbar {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+    gap: 0.5rem;
+  }
+  .toolbar::-webkit-scrollbar { display: none; }
+
+  .filters {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 0.4rem;
+  }
+  .filters::-webkit-scrollbar { display: none; }
+
+  .board {
+    /* Snap columns horizontally like a carousel */
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    padding-bottom: 0.5rem;
+    /* full viewport so snap feels right */
+    margin: 0 -0.75rem;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  .board::-webkit-scrollbar { display: none; }
+}

@@ -40,6 +40,7 @@
   font-size: 0.9rem;
   color: var(--muted);
   transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
 }
 
 .tab:hover {
@@ -99,4 +100,82 @@
   flex: 1;
   padding: 2rem;
   overflow-x: auto;
+}
+
+/* ── Bottom nav (mobile only) ── */
+.bottomNav {
+  display: none;
+}
+
+/* ── Mobile overrides ── */
+@media (max-width: 640px) {
+  .header {
+    padding: 0 1rem;
+    gap: 0;
+    height: 52px;
+  }
+
+  /* Hide desktop nav tabs — bottom nav takes over */
+  .nav { display: none; }
+
+  .logo { font-size: 1.2rem; }
+
+  .userName { display: none; }
+
+  .logoutBtn {
+    padding: 0.2rem 0.55rem;
+    font-size: 0.75rem;
+  }
+
+  .main {
+    padding: 0.75rem;
+    /* leave room for bottom nav */
+    padding-bottom: calc(0.75rem + 64px);
+  }
+
+  /* Bottom nav bar */
+  .bottomNav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    z-index: 100;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .bottomTab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    background: none;
+    border: none;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    transition: color 0.15s;
+    padding: 0;
+  }
+
+  .bottomTab svg {
+    width: 22px;
+    height: 22px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .bottomTab.active {
+    color: var(--lavender);
+  }
 }

@@ -19,6 +19,42 @@
   overflow-y: auto;
 }
 
+@media (max-width: 640px) {
+  .overlay {
+    align-items: flex-end;
+  }
+
+  .modal {
+    width: 100%;
+    max-width: 100%;
+    max-height: 92vh;
+    border-radius: var(--radius) var(--radius) 0 0;
+    padding-bottom: env(safe-area-inset-bottom);
+    /* Animate up */
+    animation: sheetUp 0.25s cubic-bezier(0.32,0.72,0,1);
+  }
+
+  @keyframes sheetUp {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
+  }
+
+  /* Drag handle visual cue */
+  .modal::before {
+    content: '';
+    display: block;
+    width: 36px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin: 0.6rem auto 0;
+  }
+
+  .row {
+    grid-template-columns: 1fr;
+  }
+}
+
 .modalHeader {
   display: flex;
   align-items: center;

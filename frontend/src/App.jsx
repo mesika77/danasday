@@ -24,6 +24,17 @@ export default function App() {
   if (loading) return null; // wait for auth check
   if (!user)   return <LoginGate />;
 
+  // Icons for bottom nav
+  const boardIcons = [
+    // checklist / kanban
+    <svg key="board" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="18" rx="1"/><rect x="14" y="3" width="7" height="11" rx="1"/><rect x="14" y="17" width="7" height="4" rx="1"/></svg>,
+    // graduation cap
+    <svg key="uni" viewBox="0 0 24 24"><path d="M2 10l10-6 10 6-10 6-10-6z"/><path d="M6 12v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"/><line x1="22" y1="10" x2="22" y2="16"/></svg>,
+  ];
+  const calendarIcon = (
+    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+  );
+
   return (
     <div className={styles.app}>
       <header className={styles.header}>
@@ -63,6 +74,27 @@ export default function App() {
           <BoardView boardId={activeBoard.id} boardName={activeBoard.name} />
         ) : null}
       </main>
+
+      {/* Mobile bottom nav */}
+      <nav className={styles.bottomNav}>
+        {boards.map((b, i) => (
+          <button
+            key={b.id}
+            className={`${styles.bottomTab} ${b.id === activeTab ? styles.active : ''}`}
+            onClick={() => setActiveTab(b.id)}
+          >
+            {boardIcons[i] || boardIcons[0]}
+            {b.name}
+          </button>
+        ))}
+        <button
+          className={`${styles.bottomTab} ${activeTab === 'calendar' ? styles.active : ''}`}
+          onClick={() => setActiveTab('calendar')}
+        >
+          {calendarIcon}
+          Calendar
+        </button>
+      </nav>
     </div>
   );
 }

@@ -1,5 +1,46 @@
 .wrap { display: flex; flex-direction: column; gap: 1rem; }
 
+@media (max-width: 640px) {
+  .header {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .nav h2 {
+    font-size: 1rem;
+    min-width: 0;
+  }
+
+  .todayBtn { font-size: 0.78rem; padding: 0.25rem 0.65rem; }
+
+  .cell {
+    min-height: 64px;
+    padding: 0.3rem 0.2rem;
+    gap: 1px;
+  }
+
+  .emptyCell { min-height: 64px; }
+
+  .dayLabel {
+    padding: 0.35rem 0.1rem;
+    font-size: 0.65rem;
+  }
+
+  .dayNum {
+    font-size: 0.72rem;
+    width: 20px;
+    height: 20px;
+  }
+
+  .eventChip {
+    font-size: 0.6rem;
+    padding: 1px 4px;
+  }
+
+  .more { font-size: 0.58rem; }
+}
+
 /* Login screen */
 .loginWrap {
   display: flex;

@@ -10,6 +10,17 @@
   overflow: hidden;
 }
 
+@media (max-width: 640px) {
+  .column {
+    /* Snap each column as a page */
+    scroll-snap-align: start;
+    /* Take most of the viewport width */
+    width: calc(100vw - 2.5rem);
+    min-width: calc(100vw - 2.5rem);
+    flex-shrink: 0;
+  }
+}
+
 .header {
   display: flex;
   align-items: center;
