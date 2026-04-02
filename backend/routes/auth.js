@@ -3,6 +3,7 @@ const passport   = require('passport');
 const jwt        = require('jsonwebtoken');
 const { Strategy: GoogleStrategy } = require('passport-google-oauth20');
 const { pool }   = require('../db/pool');
+const { seedUserBoards } = require('../db/seedUser');
 
 // Configure Google OAuth strategy
 passport.use(new GoogleStrategy(
@@ -30,6 +31,7 @@ passport.use(new GoogleStrategy(
          RETURNING id, email, name, picture`,
         [profile.id, profile.emails[0].value, profile.displayName, profile.photos[0]?.value, accessToken, refreshToken, expiry]
       );
+      await seedUserBoards(rows[0].id);
       done(null, rows[0]);
     } catch (err) {
       done(err);

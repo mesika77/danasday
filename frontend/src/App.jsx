@@ -3,14 +3,16 @@ import { getBoards } from './api';
 import { useAuth } from './context/AuthContext';
 import BoardView from './pages/BoardView';
 import CalendarView from './pages/CalendarView';
+import LoginGate from './components/LoginGate';
 import styles from './App.module.css';
 
 export default function App() {
-  const { user, login, logout } = useAuth();
+  const { user, loading, login, logout } = useAuth();
   const [boards, setBoards] = useState([]);
-  const [activeTab, setActiveTab] = useState(null); // board id or 'calendar'
+  const [activeTab, setActiveTab] = useState(null);
 
   useEffect(() => {
+    if (!user) return;
     getBoards().then(({ data }) => {
       setBoards(data);
       if (data.length) setActiveTab(data[0].id);
@@ -18,6 +20,9 @@ export default function App() {
   }, []);
 
   const activeBoard = boards.find((b) => b.id === activeTab);
+
+  if (loading) return null; // wait for auth check
+  if (!user)   return <LoginGate />;
 
   return (
     <div className={styles.app}>
@@ -43,17 +48,11 @@ export default function App() {
 
         {/* User area */}
         <div className={styles.userArea}>
-          {user ? (
-            <div className={styles.userMenu}>
-              {user.picture && <img src={user.picture} className={styles.avatar} alt={user.name} referrerPolicy="no-referrer" />}
-              <span className={styles.userName}>{user.name?.split(' ')[0]}</span>
-              <button className={styles.logoutBtn} onClick={logout}>Sign out</button>
-            </div>
-          ) : (
-            <button className={styles.connectBtn} onClick={login}>
-              Connect Calendar
-            </button>
-          )}
+          <div className={styles.userMenu}>
+            {user.picture && <img src={user.picture} className={styles.avatar} alt={user.name} referrerPolicy="no-referrer" />}
+            <span className={styles.userName}>{user.name?.split(' ')[0]}</span>
+            <button className={styles.logoutBtn} onClick={logout}>Sign out</button>
+          </div>
         </div>
       </header>
 

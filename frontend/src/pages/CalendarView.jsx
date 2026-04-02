@@ -12,7 +12,7 @@ function startOfMonth(y, m) { return new Date(y, m, 1); }
 function daysInMonth(y, m)  { return new Date(y, m + 1, 0).getDate(); }
 
 export default function CalendarView() {
-  const { user, login } = useAuth();
+  const { user } = useAuth();
   const today = new Date();
   const [year, setYear]   = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth());
@@ -33,20 +33,6 @@ export default function CalendarView() {
 
   const prevMonth = () => { if (month === 0) { setYear(y => y-1); setMonth(11); } else setMonth(m => m-1); };
   const nextMonth = () => { if (month === 11) { setYear(y => y+1); setMonth(0); } else setMonth(m => m+1); };
-
-  if (!user) {
-    return (
-      <div className={styles.loginWrap}>
-        <div className={styles.loginCard}>
-          <h2>Connect Google Calendar</h2>
-          <p>Sign in with Google to view, add and edit your calendar directly from DanasDay.</p>
-          <button className={styles.googleBtn} onClick={login}>
-            <GoogleIcon /> Sign in with Google
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   // Build calendar grid
   const firstDay = startOfMonth(year, month).getDay();

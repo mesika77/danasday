@@ -1,5 +1,8 @@
-const router = require('express').Router();
-const { pool } = require('../db/pool');
+const router      = require('express').Router();
+const { pool }    = require('../db/pool');
+const requireAuth = require('../middleware/requireAuth');
+
+router.use(requireAuth);
 
 // POST create column
 router.post('/', async (req, res) => {
