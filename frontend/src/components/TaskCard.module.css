@@ -6,10 +6,12 @@
   box-shadow: 0 1px 4px rgba(60,40,40,.05);
   transition: box-shadow 0.15s, transform 0.15s;
   user-select: none;
+  cursor: pointer;
 }
 
 .card:hover {
   box-shadow: 0 4px 14px rgba(60,40,40,.1);
+  border-color: var(--lavender);
 }
 
 .card.dragging {
@@ -80,47 +82,3 @@
   opacity: 0.85;
 }
 
-/* 3-dot menu */
-.menuWrap { position: relative; }
-
-.menuBtn {
-  background: none;
-  border: none;
-  color: var(--muted);
-  font-size: 1.1rem;
-  padding: 0 2px;
-  line-height: 1;
-  border-radius: 4px;
-  opacity: 0;
-  transition: opacity 0.15s;
-}
-
-.card:hover .menuBtn { opacity: 1; }
-
-.menu {
-  position: absolute;
-  right: 0;
-  top: 100%;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  box-shadow: var(--shadow);
-  z-index: 10;
-  min-width: 90px;
-  overflow: hidden;
-}
-
-.menu button {
-  display: block;
-  width: 100%;
-  padding: 0.5rem 0.85rem;
-  background: none;
-  border: none;
-  text-align: left;
-  font-size: 0.85rem;
-  color: var(--text);
-}
-
-.menu button:hover { background: var(--bg); }
-
-.menu button.del { color: #c0394a; }

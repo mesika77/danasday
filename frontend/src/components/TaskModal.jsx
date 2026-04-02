@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { createTask, updateTask } from '../api';
+import { createTask, updateTask, deleteTask } from '../api';
 import ColorPicker, { PALETTE } from './ColorPicker';
 import styles from './TaskModal.module.css';
 
@@ -16,6 +16,12 @@ export default function TaskModal({ task, columnId, columns, courses, onClose, o
     course_id:   task?.course_id   || '',
   });
   const [saving, setSaving] = useState(false);
+  const [confirming, setConfirming] = useState(false);
+
+  const handleDelete = async () => {
+    await deleteTask(task.id);
+    onSaved();
+  };
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
 
@@ -135,10 +141,26 @@ export default function TaskModal({ task, columnId, columns, courses, onClose, o
           )}
 
           <div className={styles.actions}>
-            <button type="button" className={styles.cancel} onClick={onClose}>Cancel</button>
-            <button type="submit" className={styles.save} disabled={saving}>
-              {saving ? 'Saving…' : isEdit ? 'Save changes' : 'Add task'}
-            </button>
+            {isEdit && !confirming && (
+              <button type="button" className={styles.delete} onClick={() => setConfirming(true)}>
+                Delete
+              </button>
+            )}
+            {confirming && (
+              <>
+                <span className={styles.confirmText}>Sure?</span>
+                <button type="button" className={styles.delete} onClick={handleDelete}>Yes, delete</button>
+                <button type="button" className={styles.cancel} onClick={() => setConfirming(false)}>No</button>
+              </>
+            )}
+            {!confirming && (
+              <>
+                <button type="button" className={styles.cancel} onClick={onClose}>Cancel</button>
+                <button type="submit" className={styles.save} disabled={saving}>
+                  {saving ? 'Saving…' : isEdit ? 'Save changes' : 'Add task'}
+                </button>
+              </>
+            )}
           </div>
         </form>
       </div>

@@ -125,7 +125,6 @@ export default function BoardView({ boardId, boardName }) {
               courseMap={courseMap}
               onAddTask={() => setAddingTo(col.id)}
               onEditTask={(task) => setEditingTask({ task, columnId: col.id })}
-              onRefresh={load}
             />
           ))}
         </DragDropContext>

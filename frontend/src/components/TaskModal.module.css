@@ -99,9 +99,27 @@
 
 .actions {
   display: flex;
+  align-items: center;
   justify-content: flex-end;
   gap: 0.6rem;
   margin-top: 0.25rem;
+}
+
+.delete {
+  background: none;
+  border: 1.5px solid #f5c6d0;
+  border-radius: 9px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  color: #c0394a;
+  margin-right: auto;
+}
+.delete:hover { background: #fde8ec; }
+
+.confirmText {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-right: auto;
 }
 
 .cancel {

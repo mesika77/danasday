@@ -1,15 +1,9 @@
 import React from 'react';
 import { Droppable, Draggable } from '@hello-pangea/dnd';
-import { deleteTask } from '../api';
 import TaskCard from './TaskCard';
 import styles from './Column.module.css';
 
-export default function Column({ column, courseMap = {}, onAddTask, onEditTask, onRefresh }) {
-  const handleDelete = async (taskId) => {
-    await deleteTask(taskId);
-    onRefresh();
-  };
-
+export default function Column({ column, courseMap = {}, onAddTask, onEditTask }) {
   return (
     <div className={styles.column}>
       <div className={styles.header}>
@@ -38,7 +32,6 @@ export default function Column({ column, courseMap = {}, onAddTask, onEditTask, 
                       isDragging={snap.isDragging}
                       course={task.course_id ? courseMap[task.course_id] : null}
                       onEdit={() => onEditTask(task)}
-                      onDelete={() => handleDelete(task.id)}
                     />
                   </div>
                 )}
