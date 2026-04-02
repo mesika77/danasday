@@ -1,0 +1,91 @@
+.banner {
+  background: #fff8f8;
+  border: 1.5px solid #f5c6d0;
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 0.25rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.65rem 1rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.header:hover { background: #fef0f2; }
+
+/* animated red dot */
+.pulse {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #e05470;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 0 rgba(224,84,112,.5);
+  animation: pulse 1.6s ease-out infinite;
+}
+
+@keyframes pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(224,84,112,.5); }
+  70%  { box-shadow: 0 0 0 8px rgba(224,84,112,0); }
+  100% { box-shadow: 0 0 0 0 rgba(224,84,112,0); }
+}
+
+.title {
+  flex: 1;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #c0394a;
+}
+
+.toggle {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0 1rem 0.75rem;
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-left-width: 4px;
+  border-radius: 8px;
+  padding: 0.35rem 0.7rem;
+  cursor: pointer;
+  transition: box-shadow 0.15s;
+}
+.chip:hover { box-shadow: 0 2px 8px rgba(60,40,40,.1); }
+
+.chip.overdue {
+  background: #fff0f2;
+}
+
+.courseDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.chipTitle {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.chipTime {
+  font-size: 0.75rem;
+  color: #c0394a;
+  white-space: nowrap;
+}

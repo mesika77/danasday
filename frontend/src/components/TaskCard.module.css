@@ -19,6 +19,15 @@
   transform: rotate(1.5deg);
 }
 
+.card.urgent {
+  animation: urgentGlow 2s ease-in-out infinite;
+}
+
+@keyframes urgentGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(224,84,112,0), 0 1px 4px rgba(60,40,40,.05); }
+  50%       { box-shadow: 0 0 10px 3px rgba(224,84,112,.25), 0 1px 4px rgba(60,40,40,.05); }
+}
+
 .top {
   display: flex;
   align-items: flex-start;

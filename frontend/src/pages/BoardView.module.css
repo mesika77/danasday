@@ -44,6 +44,18 @@
 }
 .clearBtn:hover { background: #fde8ec; }
 
+.quickBtn {
+  background: none;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.82rem;
+  color: var(--muted);
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.quickBtn:hover { border-color: var(--lavender); color: var(--lavender); }
+.quickBtn.quickActive { background: var(--lavender); border-color: var(--lavender); color: #fff; }
+
 .manageBtn {
   background: var(--surface);
   border: 1.5px solid var(--border);

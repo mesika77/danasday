@@ -4,7 +4,7 @@ import styles from './TaskCard.module.css';
 const PRIORITY_LABEL = { low: 'Low', medium: 'Medium', high: 'High' };
 const PRIORITY_COLOR = { low: '#b5ccb8', medium: '#f7d4b5', high: '#f5c6d0' };
 
-export default function TaskCard({ task, isDragging, onEdit, course }) {
+export default function TaskCard({ task, isDragging, onEdit, course, urgent }) {
   // Track pointer-down position so we can tell drag from click
   const pointerStart = useRef(null);
 
@@ -29,7 +29,7 @@ export default function TaskCard({ task, isDragging, onEdit, course }) {
 
   return (
     <div
-      className={`${styles.card} ${isDragging ? styles.dragging : ''}`}
+      className={`${styles.card} ${isDragging ? styles.dragging : ''} ${urgent ? styles.urgent : ''}`}
       style={{ borderLeft: `4px solid ${task.color_label || '#c9b8e8'}` }}
       onPointerDown={handlePointerDown}
       onClick={handleClick}
