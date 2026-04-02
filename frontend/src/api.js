@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const base = import.meta.env.VITE_API_URL || '/api';
 
-const api = axios.create({ baseURL: base });
+const api = axios.create({ baseURL: base, withCredentials: true });
 
 export const getBoards = () => api.get('/boards');
 export const getBoard  = (id) => api.get(`/boards/${id}`);
@@ -20,3 +20,9 @@ export const getCourses    = () => api.get('/courses');
 export const createCourse  = (data) => api.post('/courses', data);
 export const updateCourse  = (id, data) => api.patch(`/courses/${id}`, data);
 export const deleteCourse  = (id) => api.delete(`/courses/${id}`);
+
+export const getCalendarEvents = (timeMin, timeMax) =>
+  api.get('/calendar/events', { params: { timeMin, timeMax } });
+export const createCalendarEvent = (data) => api.post('/calendar/events', data);
+export const updateCalendarEvent = (id, data) => api.patch(`/calendar/events/${id}`, data);
+export const deleteCalendarEvent = (id) => api.delete(`/calendar/events/${id}`);

@@ -24,6 +24,7 @@
   color: var(--lavender);
   letter-spacing: -0.02em;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .nav {
@@ -51,6 +52,48 @@
   color: #fff;
   font-weight: 500;
 }
+
+/* User area */
+.userArea { margin-left: auto; flex-shrink: 0; }
+
+.userMenu {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.userName {
+  font-size: 0.88rem;
+  color: var(--text);
+}
+
+.logoutBtn {
+  background: none;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.logoutBtn:hover { border-color: var(--blush); color: #c0394a; }
+
+.connectBtn {
+  background: var(--lavender);
+  border: none;
+  border-radius: 20px;
+  padding: 0.35rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #fff;
+}
+.connectBtn:hover { opacity: 0.85; }
 
 .main {
   flex: 1;

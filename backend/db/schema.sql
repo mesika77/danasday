@@ -40,6 +40,18 @@ CREATE TABLE IF NOT EXISTS courses (
 -- Add course_id to tasks (nullable — personal tasks have no course)
 ALTER TABLE tasks ADD COLUMN IF NOT EXISTS course_id INTEGER REFERENCES courses(id) ON DELETE SET NULL;
 
+CREATE TABLE IF NOT EXISTS users (
+  id SERIAL PRIMARY KEY,
+  google_id VARCHAR(255) UNIQUE NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  name VARCHAR(255),
+  picture TEXT,
+  access_token TEXT,
+  refresh_token TEXT,
+  token_expiry TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- Seed default boards and columns if they don't exist
 INSERT INTO boards (name)
 SELECT name FROM (VALUES ('University'), ('Personal')) AS v(name)
