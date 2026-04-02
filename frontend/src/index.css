@@ -1,0 +1,35 @@
+/* DanasDay — global styles */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --blush:    #f5c6d0;
+  --lavender: #c9b8e8;
+  --sage:     #b5ccb8;
+  --peach:    #f7d4b5;
+  --sky:      #b8d8e8;
+
+  --bg:       #faf8f5;
+  --surface:  #ffffff;
+  --border:   #ede9e4;
+  --text:     #3d3535;
+  --muted:    #9a8f8f;
+
+  --radius:   14px;
+  --shadow:   0 2px 12px rgba(60,40,40,.07);
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+h1, h2, h3 {
+  font-family: 'Playfair Display', serif;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
