@@ -8,11 +8,39 @@ const PALETTE = [
   '#b8e8d4', '#e8b8d4',
 ];
 
+// Reusable color picker: swatches + a native color input for any color
+function ColorPicker({ value, onChange }) {
+  return (
+    <div className={styles.colorPicker}>
+      <div className={styles.miniPalette}>
+        {PALETTE.map((p) => (
+          <button
+            key={p}
+            type="button"
+            className={`${styles.swatch} ${value === p ? styles.selected : ''}`}
+            style={{ background: p }}
+            onClick={() => onChange(p)}
+          />
+        ))}
+        {/* Native color input as the last "swatch" — any color */}
+        <label className={styles.customSwatch} title="Pick any color">
+          <span style={{ background: PALETTE.includes(value) ? 'conic-gradient(red, yellow, lime, cyan, blue, magenta, red)' : value }} />
+          <input
+            type="color"
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+          />
+        </label>
+      </div>
+    </div>
+  );
+}
+
 export default function CourseManager({ courses, onClose, onSaved }) {
-  const [list, setList] = useState(courses);
-  const [newName, setNewName] = useState('');
+  const [list, setList]         = useState(courses);
+  const [newName, setNewName]   = useState('');
   const [newColor, setNewColor] = useState(PALETTE[0]);
-  const [editId, setEditId] = useState(null);
+  const [editId, setEditId]     = useState(null);
   const [editName, setEditName] = useState('');
   const [editColor, setEditColor] = useState('');
 
@@ -26,11 +54,7 @@ export default function CourseManager({ courses, onClose, onSaved }) {
     onSaved();
   };
 
-  const startEdit = (c) => {
-    setEditId(c.id);
-    setEditName(c.name);
-    setEditColor(c.color);
-  };
+  const startEdit = (c) => { setEditId(c.id); setEditName(c.name); setEditColor(c.color); };
 
   const handleUpdate = async (id) => {
     const { data } = await updateCourse(id, { name: editName.trim(), color: editColor });
@@ -54,7 +78,6 @@ export default function CourseManager({ courses, onClose, onSaved }) {
         </div>
 
         <div className={styles.body}>
-          {/* Existing courses */}
           <div className={styles.list}>
             {list.length === 0 && <p className={styles.empty}>No courses yet.</p>}
             {list.map((c) => (
@@ -68,16 +91,7 @@ export default function CourseManager({ courses, onClose, onSaved }) {
                       onKeyDown={(e) => e.key === 'Enter' && handleUpdate(c.id)}
                       autoFocus
                     />
-                    <div className={styles.miniPalette}>
-                      {PALETTE.map((p) => (
-                        <button
-                          key={p}
-                          className={`${styles.swatch} ${editColor === p ? styles.selected : ''}`}
-                          style={{ background: p }}
-                          onClick={() => setEditColor(p)}
-                        />
-                      ))}
-                    </div>
+                    <ColorPicker value={editColor} onChange={setEditColor} />
                     <div className={styles.rowActions}>
                       <button className={styles.saveBtn} onClick={() => handleUpdate(c.id)}>Save</button>
                       <button className={styles.cancelBtn} onClick={() => setEditId(null)}>✕</button>
@@ -97,7 +111,6 @@ export default function CourseManager({ courses, onClose, onSaved }) {
             ))}
           </div>
 
-          {/* Add new */}
           <form onSubmit={handleAdd} className={styles.addForm}>
             <p className={styles.sectionLabel}>Add course</p>
             <input
@@ -106,17 +119,7 @@ export default function CourseManager({ courses, onClose, onSaved }) {
               placeholder="e.g. Calculus II"
               className={styles.addInput}
             />
-            <div className={styles.miniPalette}>
-              {PALETTE.map((p) => (
-                <button
-                  key={p}
-                  type="button"
-                  className={`${styles.swatch} ${newColor === p ? styles.selected : ''}`}
-                  style={{ background: p }}
-                  onClick={() => setNewColor(p)}
-                />
-              ))}
-            </div>
+            <ColorPicker value={newColor} onChange={setNewColor} />
             <button type="submit" className={styles.addBtn}>+ Add</button>
           </form>
         </div>
