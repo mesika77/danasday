@@ -101,17 +101,11 @@
   }
   .filters::-webkit-scrollbar { display: none; }
 
+  /* Vertical stacked layout — columns go full-width, tasks drag vertically */
   .board {
-    /* Snap columns horizontally like a carousel */
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    padding-bottom: 0.5rem;
-    /* full viewport so snap feels right */
-    margin: 0 -0.75rem;
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
+    flex-direction: column;
+    gap: 0.75rem;
+    overflow-x: visible;
+    min-height: unset;
   }
-  .board::-webkit-scrollbar { display: none; }
 }

@@ -4,6 +4,7 @@ import { useAuth } from './context/AuthContext';
 import BoardView from './pages/BoardView';
 import CalendarView from './pages/CalendarView';
 import LoginGate from './components/LoginGate';
+import ThemePicker from './components/ThemePicker';
 import styles from './App.module.css';
 
 export default function App() {
@@ -57,8 +58,9 @@ export default function App() {
           </button>
         </nav>
 
-        {/* User area */}
+        {/* Theme picker + User area */}
         <div className={styles.userArea}>
+          <ThemePicker />
           <div className={styles.userMenu}>
             {user.picture && <img src={user.picture} className={styles.avatar} alt={user.name} referrerPolicy="no-referrer" />}
             <span className={styles.userName}>{user.name?.split(' ')[0]}</span>

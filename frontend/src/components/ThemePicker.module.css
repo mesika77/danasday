@@ -1,0 +1,70 @@
+.wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.trigger {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.6);
+  box-shadow: 0 1px 4px rgba(0,0,0,.15);
+  transition: transform 0.15s, box-shadow 0.15s;
+  min-height: 0; /* override global button min-height */
+  padding: 0;
+}
+.trigger:hover {
+  transform: scale(1.15);
+  box-shadow: 0 2px 8px rgba(0,0,0,.2);
+}
+
+.popover {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 0.85rem;
+  box-shadow: 0 8px 32px rgba(60,40,40,.14);
+  z-index: 300;
+  min-width: 180px;
+}
+
+.label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 0.6rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.swatch {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  transition: transform 0.12s, border-color 0.12s;
+  padding: 0;
+  min-height: 0;
+}
+.swatch:hover { transform: scale(1.15); }
+.swatch.active {
+  border-color: var(--text);
+  transform: scale(1.1);
+}
+
+@media (max-width: 640px) {
+  .popover {
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
