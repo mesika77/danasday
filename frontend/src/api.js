@@ -4,6 +4,13 @@ const base = import.meta.env.VITE_API_URL || '/api';
 
 const api = axios.create({ baseURL: base, withCredentials: true });
 
+// Attach stored JWT as Bearer token so mobile browsers don't need cross-site cookies
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('dd_token');
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+
 export const getBoards = () => api.get('/boards');
 export const getBoard  = (id) => api.get(`/boards/${id}`);
 

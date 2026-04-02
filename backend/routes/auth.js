@@ -56,14 +56,15 @@ router.get('/google/callback',
       process.env.JWT_SECRET,
       { expiresIn: '30d' }
     );
-    // Send token via cookie so frontend can read it securely
+    // Pass token in URL hash — never sent to servers, works on all mobile browsers.
+    // Also set cookie for backward compat with desktop browsers.
     res.cookie('dd_token', token, {
-      httpOnly: false,    // frontend needs to read it
+      httpOnly: false,
       secure: true,
       sameSite: 'none',
       maxAge: 30 * 24 * 60 * 60 * 1000,
     });
-    res.redirect(`${process.env.CLIENT_URL}?auth=success`);
+    res.redirect(`${process.env.CLIENT_URL}#token=${token}`);
   }
 );
 
