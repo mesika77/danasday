@@ -17,7 +17,7 @@ export default function App() {
       setBoards(data);
       if (data.length) setActiveTab(data[0].id);
     });
-  }, []);
+  }, [user]);
 
   const activeBoard = boards.find((b) => b.id === activeTab);
 
