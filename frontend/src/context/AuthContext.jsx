@@ -4,9 +4,20 @@ import axios from 'axios';
 const base = import.meta.env.VITE_API_URL?.replace('/api', '') || '';
 const AuthContext = createContext(null);
 
-// Retrieve stored token (localStorage wins over cookie)
+function saveToken(token) {
+  try { localStorage.setItem('dd_token', token); } catch {
+    try { sessionStorage.setItem('dd_token', token); } catch { /* private mode, no storage */ }
+  }
+}
+
 function getStoredToken() {
-  return localStorage.getItem('dd_token') || null;
+  try { return localStorage.getItem('dd_token') || sessionStorage.getItem('dd_token') || null; }
+  catch { return null; }
+}
+
+function clearToken() {
+  try { localStorage.removeItem('dd_token'); } catch { /* ignore */ }
+  try { sessionStorage.removeItem('dd_token'); } catch { /* ignore */ }
 }
 
 export function AuthProvider({ children }) {
@@ -18,7 +29,7 @@ export function AuthProvider({ children }) {
     const hash = window.location.hash;
     if (hash.startsWith('#token=')) {
       const token = hash.slice(7);
-      localStorage.setItem('dd_token', token);
+      saveToken(token);
       window.history.replaceState({}, '', window.location.pathname);
     }
 
@@ -36,7 +47,7 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
-    localStorage.removeItem('dd_token');
+    clearToken();
     axios.post(`${base}/auth/logout`, {}, { withCredentials: true })
       .finally(() => setUser(null));
   };

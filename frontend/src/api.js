@@ -6,8 +6,10 @@ const api = axios.create({ baseURL: base, withCredentials: true });
 
 // Attach stored JWT as Bearer token so mobile browsers don't need cross-site cookies
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('dd_token');
-  if (token) config.headers.Authorization = `Bearer ${token}`;
+  try {
+    const token = localStorage.getItem('dd_token') || sessionStorage.getItem('dd_token');
+    if (token) config.headers.Authorization = `Bearer ${token}`;
+  } catch { /* storage unavailable (iOS private mode) — fall back to cookie */ }
   return config;
 });
 
