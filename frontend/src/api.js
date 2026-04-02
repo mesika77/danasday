@@ -25,4 +25,5 @@ export const getCalendarEvents = (timeMin, timeMax) =>
   api.get('/calendar/events', { params: { timeMin, timeMax } });
 export const createCalendarEvent = (data) => api.post('/calendar/events', data);
 export const updateCalendarEvent = (id, data) => api.patch(`/calendar/events/${id}`, data);
-export const deleteCalendarEvent = (id) => api.delete(`/calendar/events/${id}`);
+export const deleteCalendarEvent = (id, calendarId) =>
+  api.delete(`/calendar/events/${id}`, { params: calendarId ? { calendarId } : {} });

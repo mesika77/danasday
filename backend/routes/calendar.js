@@ -39,15 +39,43 @@ router.get('/events', requireAuth, async (req, res) => {
   try {
     const cal = await getCalendarClient(req.user.id);
     const { timeMin, timeMax } = req.query;
-    const response = await cal.events.list({
-      calendarId:   'primary',
-      timeMin:      timeMin || new Date().toISOString(),
-      timeMax:      timeMax,
-      singleEvents: true,
-      orderBy:      'startTime',
-      maxResults:   250,
+
+    // Fetch all the user's calendars
+    const calList = await cal.calendarList.list();
+    const calendars = calList.data.items || [];
+
+    // Fetch events from every calendar in parallel (ignore failures for individual ones)
+    const results = await Promise.allSettled(
+      calendars.map((c) =>
+        cal.events.list({
+          calendarId:   c.id,
+          timeMin:      timeMin || new Date().toISOString(),
+          timeMax:      timeMax,
+          singleEvents: true,
+          orderBy:      'startTime',
+          maxResults:   250,
+        })
+      )
+    );
+
+    // Merge, tagging each event with its source calendarId
+    const allEvents = [];
+    results.forEach((result, i) => {
+      if (result.status !== 'fulfilled') return;
+      (result.value.data.items || []).forEach((ev) => {
+        ev._calendarId = calendars[i].id;
+        allEvents.push(ev);
+      });
     });
-    res.json(response.data.items || []);
+
+    // Sort by start time
+    allEvents.sort((a, b) => {
+      const at = a.start.dateTime || a.start.date || '';
+      const bt = b.start.dateTime || b.start.date || '';
+      return at.localeCompare(bt);
+    });
+
+    res.json(allEvents);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -87,7 +115,7 @@ router.patch('/events/:eventId', requireAuth, async (req, res) => {
     };
 
     const response = await cal.events.patch({
-      calendarId: 'primary',
+      calendarId: req.body.calendarId || 'primary',
       eventId:    req.params.eventId,
       resource:   event,
     });
@@ -101,7 +129,8 @@ router.patch('/events/:eventId', requireAuth, async (req, res) => {
 router.delete('/events/:eventId', requireAuth, async (req, res) => {
   try {
     const cal = await getCalendarClient(req.user.id);
-    await cal.events.delete({ calendarId: 'primary', eventId: req.params.eventId });
+    const calendarId = req.query.calendarId || 'primary';
+    await cal.events.delete({ calendarId, eventId: req.params.eventId });
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });

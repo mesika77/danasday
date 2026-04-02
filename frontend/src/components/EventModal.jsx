@@ -42,7 +42,7 @@ export default function EventModal({ event, defaultDate, onClose, onSaved }) {
         end:         form.allDay ? form.end.slice(0, 10)   : new Date(form.end).toISOString(),
         timeZone:    tz,
       };
-      if (isEdit) await updateCalendarEvent(event.id, payload);
+      if (isEdit) await updateCalendarEvent(event.id, { ...payload, calendarId: event._calendarId });
       else        await createCalendarEvent(payload);
       onSaved();
     } finally {
@@ -51,7 +51,7 @@ export default function EventModal({ event, defaultDate, onClose, onSaved }) {
   };
 
   const handleDelete = async () => {
-    await deleteCalendarEvent(event.id);
+    await deleteCalendarEvent(event.id, event._calendarId);
     onSaved();
   };
 
