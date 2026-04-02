@@ -1,8 +1,13 @@
-// Terminal columns — tasks here are "done", skip urgency
-const TERMINAL = ['done', 'submitted'];
+// Terminal column per board — urgency stops here
+const TERMINAL = {
+  university: ['submitted'],
+  personal:   ['done'],
+};
 
-export function isTerminalColumn(colTitle) {
-  return TERMINAL.includes(colTitle.toLowerCase());
+export function isTerminalColumn(colTitle, boardName = '') {
+  const key = boardName.toLowerCase();
+  const list = TERMINAL[key] || ['done', 'submitted'];
+  return list.includes(colTitle.toLowerCase());
 }
 
 // Returns hours until due (negative = overdue)
@@ -13,10 +18,10 @@ export function hoursUntilDue(dueDateStr) {
   return (due - Date.now()) / 36e5;
 }
 
-// A task is urgent if due within 24h and not in a terminal column
-export function isUrgent(task, columnTitle) {
+// A task is urgent if due within 24h and not in the terminal column for its board
+export function isUrgent(task, columnTitle, boardName) {
   if (!task.due_date) return false;
-  if (isTerminalColumn(columnTitle)) return false;
+  if (isTerminalColumn(columnTitle, boardName)) return false;
   const h = hoursUntilDue(task.due_date);
   return h !== null && h <= 24;
 }

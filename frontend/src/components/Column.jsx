@@ -4,7 +4,7 @@ import TaskCard from './TaskCard';
 import { isUrgent } from '../utils/urgency';
 import styles from './Column.module.css';
 
-export default function Column({ column, courseMap = {}, onAddTask, onEditTask }) {
+export default function Column({ column, courseMap = {}, boardName, onAddTask, onEditTask }) {
   return (
     <div className={styles.column}>
       <div className={styles.header}>
@@ -32,7 +32,7 @@ export default function Column({ column, courseMap = {}, onAddTask, onEditTask }
                       task={task}
                       isDragging={snap.isDragging}
                       course={task.course_id ? courseMap[task.course_id] : null}
-                      urgent={isUrgent(task, column.title)}
+                      urgent={isUrgent(task, column.title, boardName)}
                       onEdit={() => onEditTask(task)}
                     />
                   </div>

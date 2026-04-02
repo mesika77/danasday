@@ -41,7 +41,7 @@ export default function BoardView({ boardId, boardName }) {
     if (Notification.permission === 'denied') return;
 
     const urgentTasks = board.columns.flatMap((col) =>
-      isTerminalColumn(col.title) ? [] : col.tasks.filter((t) => isUrgent(t, col.title))
+      isTerminalColumn(col.title, boardName) ? [] : col.tasks.filter((t) => isUrgent(t, col.title, boardName))
     );
 
     const notify = () => {
@@ -70,7 +70,7 @@ export default function BoardView({ boardId, boardName }) {
 
   // Collect all urgent tasks across non-terminal columns for the banner
   const urgentTasks = board.columns.flatMap((col) =>
-    isTerminalColumn(col.title) ? [] : col.tasks.filter((t) => isUrgent(t, col.title))
+    isTerminalColumn(col.title, boardName) ? [] : col.tasks.filter((t) => isUrgent(t, col.title, boardName))
   );
 
   const filteredTasks = (tasks) =>
@@ -200,6 +200,7 @@ export default function BoardView({ boardId, boardName }) {
               key={col.id}
               column={{ ...col, tasks: filteredTasks(col.tasks) }}
               courseMap={courseMap}
+              boardName={boardName}
               onAddTask={() => setAddingTo(col.id)}
               onEditTask={(task) => setEditingTask({ task, columnId: col.id })}
             />
