@@ -7,8 +7,15 @@ const { migrate, pool } = require('./db/pool');
 
 const app = express();
 
+const ALLOWED_ORIGINS = [
+  process.env.CLIENT_URL,
+  'http://localhost:5173',
+  'https://danasday.up.railway.app',
+  'https://frontend-production-046d.up.railway.app',
+].filter(Boolean);
+
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: (origin, cb) => cb(null, !origin || ALLOWED_ORIGINS.includes(origin)),
   credentials: true,
 }));
 app.use(express.json());

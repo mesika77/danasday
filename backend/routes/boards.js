@@ -1,12 +1,14 @@
-const router      = require('express').Router();
-const { pool }    = require('../db/pool');
-const requireAuth = require('../middleware/requireAuth');
+const router           = require('express').Router();
+const { pool }         = require('../db/pool');
+const requireAuth      = require('../middleware/requireAuth');
+const { seedUserBoards } = require('../db/seedUser');
 
 router.use(requireAuth);
 
-// GET all boards for the logged-in user
+// GET all boards for the logged-in user (seeds on first visit too)
 router.get('/', async (req, res) => {
   try {
+    await seedUserBoards(req.user.id); // no-op if boards exist
     const boards = await pool.query(
       'SELECT * FROM boards WHERE user_id = $1 ORDER BY id',
       [req.user.id]
