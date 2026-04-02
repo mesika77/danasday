@@ -77,22 +77,19 @@ export default function BoardView({ boardId, boardName }) {
     tasks.filter((t) => {
       if (filterCourse && t.course_id !== filterCourse) return false;
       if (filterPriority && t.priority !== filterPriority) return false;
-      if (!isUniversity) {
-        // Month filter
-        if (filterMonth !== '' && t.due_date) {
-          const m = new Date(t.due_date).getMonth();
-          if (m !== Number(filterMonth)) return false;
-        }
-        // Due-soon quick filter
-        if (filterDue) {
-          if (!t.due_date) return false;
-          const due  = new Date(t.due_date); due.setHours(23,59,59);
-          const now  = Date.now();
-          const diff = due - now;
-          if (filterDue === 'overdue' && diff >= 0) return false;
-          if (filterDue === 'today'   && (diff < 0 || diff > 864e5)) return false;
-          if (filterDue === 'week'    && (diff < 0 || diff > 7*864e5)) return false;
-        }
+      // Month filter — Personal only
+      if (!isUniversity && filterMonth !== '' && t.due_date) {
+        const m = new Date(t.due_date).getMonth();
+        if (m !== Number(filterMonth)) return false;
+      }
+      // Due-date quick filter — both boards
+      if (filterDue) {
+        if (!t.due_date) return false;
+        const due  = new Date(t.due_date); due.setHours(23,59,59);
+        const diff = due - Date.now();
+        if (filterDue === 'overdue' && diff >= 0) return false;
+        if (filterDue === 'today'   && (diff < 0 || diff > 864e5)) return false;
+        if (filterDue === 'week'    && (diff < 0 || diff > 7*864e5)) return false;
       }
       return true;
     });
@@ -156,29 +153,28 @@ export default function BoardView({ boardId, boardName }) {
             <option value="high">High</option>
           </select>
 
-          {/* Personal-only filters */}
+          {/* Month filter — Personal only */}
           {!isUniversity && (
-            <>
-              <select
-                className={styles.select}
-                value={filterMonth}
-                onChange={(e) => setFilterMonth(e.target.value)}
-              >
-                <option value="">All months</option>
-                {MONTHS.map((m, i) => (<option key={i} value={i}>{m}</option>))}
-              </select>
-
-              {['overdue', 'today', 'week'].map((key) => (
-                <button
-                  key={key}
-                  className={`${styles.quickBtn} ${filterDue === key ? styles.quickActive : ''}`}
-                  onClick={() => setFilterDue(filterDue === key ? '' : key)}
-                >
-                  {key === 'overdue' ? 'Overdue' : key === 'today' ? 'Due today' : 'This week'}
-                </button>
-              ))}
-            </>
+            <select
+              className={styles.select}
+              value={filterMonth}
+              onChange={(e) => setFilterMonth(e.target.value)}
+            >
+              <option value="">All months</option>
+              {MONTHS.map((m, i) => (<option key={i} value={i}>{m}</option>))}
+            </select>
           )}
+
+          {/* Due-date quick filters — both boards */}
+          {['overdue', 'today', 'week'].map((key) => (
+            <button
+              key={key}
+              className={`${styles.quickBtn} ${filterDue === key ? styles.quickActive : ''}`}
+              onClick={() => setFilterDue(filterDue === key ? '' : key)}
+            >
+              {key === 'overdue' ? 'Overdue' : key === 'today' ? 'Due today' : 'This week'}
+            </button>
+          ))}
 
           {activeFilters > 0 && (
             <button className={styles.clearBtn} onClick={clearFilters}>Clear filters</button>
