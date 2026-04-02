@@ -97,26 +97,6 @@
   margin-bottom: 0.5rem;
 }
 
-.colors {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.swatch {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: 2px solid transparent;
-  transition: transform 0.1s, border-color 0.1s;
-}
-
-.swatch:hover { transform: scale(1.15); }
-
-.swatch.selected {
-  border-color: var(--text);
-  transform: scale(1.1);
-}
-
 .actions {
   display: flex;
   justify-content: flex-end;

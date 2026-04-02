@@ -1,40 +1,7 @@
 import React, { useState } from 'react';
 import { createCourse, updateCourse, deleteCourse } from '../api';
+import ColorPicker, { PALETTE } from './ColorPicker';
 import styles from './CourseManager.module.css';
-
-const PALETTE = [
-  '#c9b8e8', '#f5c6d0', '#b5ccb8', '#f7d4b5',
-  '#b8d8e8', '#e8e8b5', '#e8c9b8', '#d4b8e8',
-  '#b8e8d4', '#e8b8d4',
-];
-
-// Reusable color picker: swatches + a native color input for any color
-function ColorPicker({ value, onChange }) {
-  return (
-    <div className={styles.colorPicker}>
-      <div className={styles.miniPalette}>
-        {PALETTE.map((p) => (
-          <button
-            key={p}
-            type="button"
-            className={`${styles.swatch} ${value === p ? styles.selected : ''}`}
-            style={{ background: p }}
-            onClick={() => onChange(p)}
-          />
-        ))}
-        {/* Native color input as the last "swatch" — any color */}
-        <label className={styles.customSwatch} title="Pick any color">
-          <span style={{ background: PALETTE.includes(value) ? 'conic-gradient(red, yellow, lime, cyan, blue, magenta, red)' : value }} />
-          <input
-            type="color"
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-          />
-        </label>
-      </div>
-    </div>
-  );
-}
 
 export default function CourseManager({ courses, onClose, onSaved }) {
   const [list, setList]         = useState(courses);

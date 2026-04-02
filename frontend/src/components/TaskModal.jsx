@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import { createTask, updateTask } from '../api';
+import ColorPicker, { PALETTE } from './ColorPicker';
 import styles from './TaskModal.module.css';
-
-const COLOR_OPTIONS = [
-  '#c9b8e8', '#f5c6d0', '#b5ccb8', '#f7d4b5', '#b8d8e8', '#e8e8b5',
-];
 
 // courses prop is only passed when on University board
 export default function TaskModal({ task, columnId, columns, courses, onClose, onSaved }) {
@@ -21,6 +18,16 @@ export default function TaskModal({ task, columnId, columns, courses, onClose, o
   const [saving, setSaving] = useState(false);
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
+
+  // When course changes, auto-set color_label to the course color
+  const setCourse = (id) => {
+    const course = courses?.find((c) => String(c.id) === String(id));
+    setForm((f) => ({
+      ...f,
+      course_id: id,
+      color_label: course ? course.color : f.color_label,
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -96,7 +103,7 @@ export default function TaskModal({ task, columnId, columns, courses, onClose, o
           {courses && (
             <label>
               Course
-              <select value={form.course_id} onChange={(e) => set('course_id', e.target.value)}>
+              <select value={form.course_id} onChange={(e) => setCourse(e.target.value)}>
                 <option value="">— No course —</option>
                 {courses.map((c) => (
                   <option key={c.id} value={c.id}>{c.name}</option>
@@ -116,20 +123,16 @@ export default function TaskModal({ task, columnId, columns, courses, onClose, o
             </label>
           )}
 
-          <div>
-            <span className={styles.colorLabel}>Label colour</span>
-            <div className={styles.colors}>
-              {COLOR_OPTIONS.map((c) => (
-                <button
-                  key={c}
-                  type="button"
-                  className={`${styles.swatch} ${form.color_label === c ? styles.selected : ''}`}
-                  style={{ background: c }}
-                  onClick={() => set('color_label', c)}
-                />
-              ))}
+          {/* Color picker — only shown when no course is selected */}
+          {!form.course_id && (
+            <div>
+              <span className={styles.colorLabel}>Label colour</span>
+              <ColorPicker
+                value={form.color_label}
+                onChange={(v) => set('color_label', v)}
+              />
             </div>
-          </div>
+          )}
 
           <div className={styles.actions}>
             <button type="button" className={styles.cancel} onClick={onClose}>Cancel</button>
