@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { getCalendarEvents } from '../api';
+import { getCalendarEvents, getCalendars } from '../api';
 import EventModal from '../components/EventModal';
 import styles from './CalendarView.module.css';
 
@@ -41,9 +41,16 @@ export default function CalendarView() {
   // View mode — default week on mobile
   const [view, setView] = useState(() => window.innerWidth <= 640 ? 'week' : 'month');
 
-  const [events, setEvents]       = useState([]);
-  const [editEvent, setEditEvent] = useState(null);
-  const [addDate, setAddDate]     = useState(null);
+  const [events, setEvents]         = useState([]);
+  const [calendarList, setCalendarList] = useState([]);
+  const [hiddenCals, setHiddenCals] = useState(() => {
+    try { return new Set(JSON.parse(localStorage.getItem('dd_hidden_cals') || '[]')); }
+    catch { return new Set(); }
+  });
+  const [showCalPicker, setShowCalPicker] = useState(false);
+  const calPickerRef = useRef(null);
+  const [editEvent, setEditEvent]   = useState(null);
+  const [addDate, setAddDate]       = useState(null);
 
   const loadEvents = () => {
     if (!user) return;
@@ -60,13 +67,40 @@ export default function CalendarView() {
 
   useEffect(loadEvents, [user, year, month, view, weekStart]);
 
-  // Map events → date string
+  // Fetch calendar list once
+  useEffect(() => {
+    if (!user) return;
+    getCalendars().then(({ data }) => setCalendarList(data)).catch(() => {});
+  }, [user]);
+
+  // Close calendar picker on outside click
+  useEffect(() => {
+    if (!showCalPicker) return;
+    const handler = (e) => {
+      if (calPickerRef.current && !calPickerRef.current.contains(e.target)) setShowCalPicker(false);
+    };
+    document.addEventListener('pointerdown', handler);
+    return () => document.removeEventListener('pointerdown', handler);
+  }, [showCalPicker]);
+
+  const toggleCalendar = (id) => {
+    setHiddenCals((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      try { localStorage.setItem('dd_hidden_cals', JSON.stringify([...next])); } catch {}
+      return next;
+    });
+  };
+
+  // Map events → date string (excluding hidden calendars)
   const eventsByDate = {};
-  events.forEach((ev) => {
-    const d = (ev.start.date || ev.start.dateTime || '').slice(0, 10);
-    if (!eventsByDate[d]) eventsByDate[d] = [];
-    eventsByDate[d].push(ev);
-  });
+  events
+    .filter((ev) => !hiddenCals.has(ev._calendarId))
+    .forEach((ev) => {
+      const d = (ev.start.date || ev.start.dateTime || '').slice(0, 10);
+      if (!eventsByDate[d]) eventsByDate[d] = [];
+      eventsByDate[d].push(ev);
+    });
 
   // Navigation
   const prevMonth = () => { if (month === 0) { setYear(y => y-1); setMonth(11); } else setMonth(m => m-1); };
@@ -102,6 +136,48 @@ export default function CalendarView() {
           >
             {view === 'week' ? 'Month' : 'Week'}
           </button>
+          {/* Calendar picker */}
+          <div className={styles.calPickerWrap} ref={calPickerRef}>
+            <button
+              className={`${styles.calPickerBtn} ${hiddenCals.size > 0 ? styles.calPickerActive : ''}`}
+              onClick={() => setShowCalPicker(o => !o)}
+              title="Choose calendars"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+            </button>
+            {showCalPicker && (
+              <div className={styles.calPickerDropdown}>
+                <p className={styles.calPickerTitle}>Calendars</p>
+                {calendarList.map((cal) => {
+                  const visible = !hiddenCals.has(cal.id);
+                  return (
+                    <button
+                      key={cal.id}
+                      className={styles.calPickerItem}
+                      onClick={() => toggleCalendar(cal.id)}
+                    >
+                      <span
+                        className={styles.calPickerCheck}
+                        style={{
+                          background: visible ? (cal.backgroundColor || 'var(--lavender)') : 'transparent',
+                          borderColor: cal.backgroundColor || 'var(--lavender)',
+                        }}
+                      >
+                        {visible && (
+                          <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="2,6 5,9 10,3"/>
+                          </svg>
+                        )}
+                      </span>
+                      <span className={styles.calPickerName}>{cal.summary}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

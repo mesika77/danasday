@@ -34,6 +34,23 @@ async function getCalendarClient(userId) {
   return google.calendar({ version: 'v3', auth: oauth2 });
 }
 
+// GET /api/calendar/calendars — list all calendars for the user
+router.get('/calendars', requireAuth, async (req, res) => {
+  try {
+    const cal = await getCalendarClient(req.user.id);
+    const { data } = await cal.calendarList.list();
+    const calendars = (data.items || []).map((c) => ({
+      id:              c.id,
+      summary:         c.summary,
+      backgroundColor: c.backgroundColor,
+      primary:         c.primary || false,
+    }));
+    res.json(calendars);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // GET /api/calendar/events?timeMin=...&timeMax=...
 router.get('/events', requireAuth, async (req, res) => {
   try {

@@ -227,6 +227,87 @@
   white-space: nowrap;
 }
 
+/* ── Calendar picker ── */
+.calPickerWrap {
+  position: relative;
+}
+
+.calPickerBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  background: none;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  color: var(--muted);
+  transition: border-color 0.15s, color 0.15s;
+  min-height: 0;
+  padding: 0;
+}
+.calPickerBtn:hover { border-color: var(--lavender); color: var(--lavender); }
+.calPickerBtn.calPickerActive { border-color: var(--lavender); color: var(--lavender); }
+
+.calPickerDropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 0.75rem;
+  box-shadow: 0 8px 32px rgba(60,40,40,.14);
+  z-index: 200;
+  min-width: 220px;
+}
+
+.calPickerTitle {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+  padding: 0 0.25rem;
+}
+
+.calPickerItem {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  padding: 0.45rem 0.35rem;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.1s;
+  min-height: 0;
+}
+.calPickerItem:hover { background: var(--bg); }
+
+.calPickerCheck {
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  border: 2px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+.calPickerName {
+  font-size: 0.88rem;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* ── Mobile overrides ── */
 @media (max-width: 640px) {
   .nav h2 { font-size: 1rem; min-width: 0; }
@@ -246,4 +327,10 @@
   .weekEvents { padding: 0.4rem 0.6rem; }
   .weekEventChip { padding: 0.25rem 0.5rem; }
   .weekEventTitle { font-size: 0.78rem; }
+
+  .calPickerDropdown {
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 }

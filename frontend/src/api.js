@@ -30,6 +30,7 @@ export const createCourse  = (data) => api.post('/courses', data);
 export const updateCourse  = (id, data) => api.patch(`/courses/${id}`, data);
 export const deleteCourse  = (id) => api.delete(`/courses/${id}`);
 
+export const getCalendars      = () => api.get('/calendar/calendars');
 export const getCalendarEvents = (timeMin, timeMax) =>
   api.get('/calendar/events', { params: { timeMin, timeMax } });
 export const createCalendarEvent = (data) => api.post('/calendar/events', data);
