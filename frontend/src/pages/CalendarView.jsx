@@ -126,6 +126,7 @@ export default function CalendarView() {
                   <div className={styles.eventList}>
                     {dayEvents.slice(0, 3).map((ev) => (
                       <div key={ev.id} className={styles.eventChip}
+                        style={ev._color ? { background: ev._color } : {}}
                         onClick={(e) => { e.stopPropagation(); setEditEvent(ev); }}
                         title={ev.summary}>{ev.summary}</div>
                     ))}
@@ -156,6 +157,7 @@ export default function CalendarView() {
                     ? <span className={styles.noEvents}>No events</span>
                     : dayEvents.map((ev) => (
                       <div key={ev.id} className={styles.weekEventChip}
+                        style={ev._color ? { background: ev._color } : {}}
                         onClick={(e) => { e.stopPropagation(); setEditEvent(ev); }}>
                         <span className={styles.weekEventTime}>
                           {ev.start.dateTime

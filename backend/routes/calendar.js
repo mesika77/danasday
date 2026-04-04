@@ -58,12 +58,24 @@ router.get('/events', requireAuth, async (req, res) => {
       )
     );
 
-    // Merge, tagging each event with its source calendarId
+    // Google Calendar colorId → hex (matches the 11 palette entries)
+    const GCal_COLORS = {
+      '1': '#7986cb', '2': '#33b679', '3':  '#8e24aa', '4': '#e67c73',
+      '5': '#f6bf26', '6': '#f4511e', '7':  '#039be5', '8': '#616161',
+      '9': '#3f51b5', '10': '#0b8043', '11': '#d50000',
+    };
+
+    // Merge, tagging each event with its source calendarId and resolved color
     const allEvents = [];
     results.forEach((result, i) => {
       if (result.status !== 'fulfilled') return;
+      const cal = calendars[i];
       (result.value.data.items || []).forEach((ev) => {
-        ev._calendarId = calendars[i].id;
+        ev._calendarId = cal.id;
+        // Event-level color overrides calendar color
+        ev._color = ev.colorId
+          ? GCal_COLORS[ev.colorId]
+          : (cal.backgroundColor || null);
         allEvents.push(ev);
       });
     });
