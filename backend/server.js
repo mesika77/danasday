@@ -4,6 +4,7 @@ const cors         = require('cors');
 const cookieParser = require('cookie-parser');
 const passport     = require('passport');
 const { migrate, pool } = require('./db/pool');
+const { sendEmailReminders } = require('./services/emailNotifier');
 
 const app = express();
 
@@ -59,6 +60,8 @@ migrate()
   .then(() => {
     app.listen(PORT, () => console.log(`DanasDay API running on port ${PORT}`));
     cleanupStaleTasks();
+    sendEmailReminders();
     setInterval(cleanupStaleTasks, 24 * 60 * 60 * 1000);
+    setInterval(sendEmailReminders, 24 * 60 * 60 * 1000);
   })
   .catch((err) => { console.error('Migration failed:', err); process.exit(1); });
