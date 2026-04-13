@@ -20,11 +20,11 @@ router.get('/column/:columnId', async (req, res) => {
 // POST create task
 router.post('/', async (req, res) => {
   try {
-    const { column_id, title, description, due_date, priority, color_label, position, course_id } = req.body;
+    const { column_id, title, description, due_date, priority, color_label, position, course_id, task_type } = req.body;
     const result = await pool.query(
-      `INSERT INTO tasks (column_id, title, description, due_date, priority, color_label, position, course_id)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
-      [column_id, title, description, due_date || null, priority || 'medium', color_label || '#c9b8e8', position ?? 0, course_id || null]
+      `INSERT INTO tasks (column_id, title, description, due_date, priority, color_label, position, course_id, task_type)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
+      [column_id, title, description, due_date || null, priority || 'medium', color_label || '#c9b8e8', position ?? 0, course_id || null, task_type || 'general']
     );
     res.status(201).json(result.rows[0]);
   } catch (err) {
@@ -64,7 +64,7 @@ router.patch('/reorder', async (req, res) => {
 router.patch('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, description, due_date, priority, color_label, position, column_id, course_id } = req.body;
+    const { title, description, due_date, priority, color_label, position, column_id, course_id, task_type } = req.body;
     const result = await pool.query(
       `UPDATE tasks SET
         title             = COALESCE($1, title),
@@ -75,9 +75,10 @@ router.patch('/:id', async (req, res) => {
         position          = COALESCE($6, position),
         column_id         = COALESCE($7, column_id),
         course_id         = CASE WHEN $9 THEN NULL ELSE COALESCE($8, course_id) END,
+        task_type         = COALESCE($10, task_type),
         status_changed_at = CASE WHEN $7 IS NOT NULL AND $7 <> column_id THEN NOW() ELSE status_changed_at END
-       WHERE id = $10 RETURNING *`,
-      [title, description, due_date, priority, color_label, position, column_id, course_id, course_id === null, id]
+       WHERE id = $11 RETURNING *`,
+      [title, description, due_date, priority, color_label, position, column_id, course_id, course_id === null, task_type, id]
     );
     res.json(result.rows[0]);
   } catch (err) {
