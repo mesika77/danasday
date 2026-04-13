@@ -51,7 +51,7 @@ function buildHtml(userName, tomorrow, inTwoDays) {
     <html>
     <body style="font-family:'DM Sans',Arial,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#3d3535;">
       <h1 style="font-family:Georgia,serif;font-size:22px;margin-bottom:4px;">dana's day</h1>
-      <p style="color:#9a8f8f;margin-bottom:20px;">Hi ${userName}, here are your upcoming tasks.</p>
+      <p style="color:#9a8f8f;margin-bottom:20px;">Hi ${esc(userName)}, here are your upcoming tasks.</p>
       ${todaySection}
       ${twoDaySection}
       <p style="margin-top:32px;font-size:12px;color:#bbb;">You're receiving this because you have tasks due soon.</p>
@@ -66,8 +66,8 @@ function buildSubject(hasTomorrow, hasTwoDays) {
 }
 
 async function sendEmailReminders() {
-  if (!process.env.RESEND_API_KEY) {
-    console.log('Email reminders skipped: RESEND_API_KEY not set.');
+  if (!process.env.RESEND_API_KEY || !process.env.RESEND_FROM_EMAIL) {
+    console.log('Email reminders skipped: RESEND_API_KEY or RESEND_FROM_EMAIL not set.');
     return;
   }
   const resend = new Resend(process.env.RESEND_API_KEY);
