@@ -40,10 +40,13 @@ async function cleanupStaleTasks() {
       DELETE FROM tasks t
       USING columns c, boards b
       WHERE t.column_id = c.id AND c.board_id = b.id
-        AND t.status_changed_at < NOW() - INTERVAL '5 days'
         AND (
           (b.name = 'University' AND c.title = 'Submitted') OR
           (b.name = 'Personal'   AND c.title = 'Done')
+        )
+        AND (
+          (t.due_date IS NOT NULL AND t.due_date < CURRENT_DATE) OR
+          (t.due_date IS NULL     AND t.status_changed_at < NOW() - INTERVAL '5 days')
         )
     `);
     if (result.rowCount > 0) console.log(`Cleanup: removed ${result.rowCount} stale task(s).`);
