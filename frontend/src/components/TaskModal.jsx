@@ -3,6 +3,8 @@ import { createTask, updateTask, deleteTask } from '../api';
 import ColorPicker, { PALETTE } from './ColorPicker';
 import styles from './TaskModal.module.css';
 
+const VALID_TASK_TYPES = ['general', 'homework', 'lab_report', 'work', 'practice'];
+
 // courses prop is only passed when on University board
 export default function TaskModal({ task, columnId, columns, courses, onClose, onSaved }) {
   const isEdit = Boolean(task);
@@ -14,7 +16,7 @@ export default function TaskModal({ task, columnId, columns, courses, onClose, o
     color_label: task?.color_label || '#c9b8e8',
     column_id:   task?.column_id   || columnId,
     course_id:   task?.course_id   || '',
-    task_type:   task?.task_type   || 'general',
+    task_type:   VALID_TASK_TYPES.includes(task?.task_type) ? task.task_type : 'general',
   });
   const [saving, setSaving] = useState(false);
   const [confirming, setConfirming] = useState(false);
