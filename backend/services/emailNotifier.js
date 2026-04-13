@@ -1,8 +1,6 @@
 const { Resend } = require('resend');
 const { pool }   = require('../db/pool');
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 const PRIORITY_LABEL = { low: 'Low', medium: 'Medium', high: 'High' };
 const TYPE_LABEL = {
   general:    'General',
@@ -12,17 +10,25 @@ const TYPE_LABEL = {
   practice:   'Practice',
 };
 
+function esc(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
 function formatDate(dateStr) {
   return new Date(dateStr).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
 }
 
 function buildTaskRow(t) {
   const typeLabel = TYPE_LABEL[t.task_type] || t.task_type;
-  const course    = t.course_name ? ` &bull; ${t.course_name}` : '';
-  const desc      = t.description ? `<p style="margin:4px 0 0;color:#6b5e5e;font-size:13px;">${t.description}</p>` : '';
+  const course    = t.course_name ? ` &bull; ${esc(t.course_name)}` : '';
+  const desc      = t.description ? `<p style="margin:4px 0 0;color:#6b5e5e;font-size:13px;">${esc(t.description)}</p>` : '';
   return `
     <div style="background:#faf8f5;border-left:4px solid #c8b49a;border-radius:8px;padding:12px 14px;margin-bottom:10px;">
-      <strong style="font-size:15px;color:#3d3535;">${t.title}</strong>${desc}
+      <strong style="font-size:15px;color:#3d3535;">${esc(t.title)}</strong>${desc}
       <p style="margin:6px 0 0;font-size:12px;color:#9a8f8f;">
         ${PRIORITY_LABEL[t.priority] || t.priority} priority
         &bull; ${typeLabel}${course}
@@ -64,11 +70,12 @@ async function sendEmailReminders() {
     console.log('Email reminders skipped: RESEND_API_KEY not set.');
     return;
   }
+  const resend = new Resend(process.env.RESEND_API_KEY);
 
   try {
     const { rows } = await pool.query(`
       SELECT
-        t.id, t.title, t.description, t.due_date, t.priority, t.task_type,
+        t.id, t.title, t.description, t.due_date::text AS due_date, t.priority, t.task_type,
         u.id   AS user_id,
         u.email,
         u.name AS user_name,
@@ -92,14 +99,16 @@ async function sendEmailReminders() {
       return;
     }
 
-    const todayPlus1 = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
+    const { rows: dateRows } = await pool.query(
+      `SELECT (CURRENT_DATE + 1)::text AS tomorrow`
+    );
+    const todayPlus1 = dateRows[0].tomorrow;
     const byUser = {};
     for (const row of rows) {
       if (!byUser[row.user_id]) {
         byUser[row.user_id] = { email: row.email, name: row.user_name, tomorrow: [], inTwoDays: [] };
       }
-      const dueDate = new Date(row.due_date).toISOString().slice(0, 10);
-      if (dueDate === todayPlus1) {
+      if (row.due_date === todayPlus1) {
         byUser[row.user_id].tomorrow.push(row);
       } else {
         byUser[row.user_id].inTwoDays.push(row);
@@ -110,6 +119,10 @@ async function sendEmailReminders() {
 
     for (const [userId, { email, name, tomorrow, inTwoDays }] of Object.entries(byUser)) {
       const firstName = name?.split(' ')[0] || 'there';
+      if (!email) {
+        console.warn(`Skipping reminder: user ${userId} has no email address.`);
+        continue;
+      }
       try {
         await resend.emails.send({
           from:    process.env.RESEND_FROM_EMAIL,
