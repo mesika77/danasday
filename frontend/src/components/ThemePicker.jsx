@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import styles from './ThemePicker.module.css';
 
 const THEMES = [
+  { name: 'Beige',    value: '#c8b49a' },
   { name: 'Lavender', value: '#c9b8e8' },
   { name: 'Blush',    value: '#e8a0b8' },
   { name: 'Sage',     value: '#94bb94' },
@@ -29,7 +30,7 @@ export function loadSavedTheme() {
 export default function ThemePicker() {
   const [open, setOpen] = useState(false);
   const [current, setCurrent] = useState(
-    () => getComputedStyle(document.documentElement).getPropertyValue('--lavender').trim() || '#c9b8e8'
+    () => getComputedStyle(document.documentElement).getPropertyValue('--lavender').trim() || '#c8b49a'
   );
   const ref = useRef(null);
 
