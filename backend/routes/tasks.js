@@ -24,7 +24,7 @@ router.post('/', async (req, res) => {
     const result = await pool.query(
       `INSERT INTO tasks (column_id, title, description, due_date, priority, color_label, position, course_id, task_type)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
-      [column_id, title, description, due_date || null, priority || 'medium', color_label || '#c9b8e8', position ?? 0, course_id || null, task_type || 'general']
+      [column_id, title, description, due_date || null, priority || 'medium', color_label || '#c9b8e8', position ?? 0, course_id || null, task_type ?? 'general']
     );
     res.status(201).json(result.rows[0]);
   } catch (err) {
