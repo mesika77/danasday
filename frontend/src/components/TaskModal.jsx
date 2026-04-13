@@ -14,6 +14,7 @@ export default function TaskModal({ task, columnId, columns, courses, onClose, o
     color_label: task?.color_label || '#c9b8e8',
     column_id:   task?.column_id   || columnId,
     course_id:   task?.course_id   || '',
+    task_type:   task?.task_type   || 'general',
   });
   const [saving, setSaving] = useState(false);
   const [confirming, setConfirming] = useState(false);
@@ -104,6 +105,17 @@ export default function TaskModal({ task, columnId, columns, courses, onClose, o
               </select>
             </label>
           </div>
+
+          <label>
+            Type
+            <select value={form.task_type} onChange={(e) => set('task_type', e.target.value)}>
+              <option value="general">General</option>
+              <option value="homework">Homework</option>
+              <option value="lab_report">Lab Report</option>
+              <option value="work">Work</option>
+              <option value="practice">Practice</option>
+            </select>
+          </label>
 
           {/* Course picker — only on University board */}
           {courses && (
