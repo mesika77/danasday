@@ -3,6 +3,12 @@ import styles from './TaskCard.module.css';
 
 const PRIORITY_LABEL = { low: 'Low', medium: 'Medium', high: 'High' };
 const PRIORITY_COLOR = { low: '#b5ccb8', medium: '#f7d4b5', high: '#f5c6d0' };
+const TYPE_LABEL = {
+  homework:   'Homework',
+  lab_report: 'Lab Report',
+  work:       'Work',
+  practice:   'Practice',
+};
 
 export default function TaskCard({ task, isDragging, onEdit, course, urgent }) {
   // Track pointer-down position so we can tell drag from click
@@ -43,6 +49,11 @@ export default function TaskCard({ task, isDragging, onEdit, course, urgent }) {
       )}
 
       <div className={styles.meta}>
+        {task.task_type && task.task_type !== 'general' && (
+          <span className={styles.taskType}>
+            {TYPE_LABEL[task.task_type] || task.task_type}
+          </span>
+        )}
         {course && (
           <span className={styles.course} style={{ background: course.color }}>
             {course.name}

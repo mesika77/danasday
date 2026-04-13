@@ -96,3 +96,14 @@
   opacity: 0.85;
 }
 
+.taskType {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  background: var(--border);
+  border-radius: 4px;
+  padding: 2px 6px;
+}
+
