@@ -69,7 +69,7 @@ router.patch('/:id', async (req, res) => {
       `UPDATE tasks SET
         title             = COALESCE($1, title),
         description       = COALESCE($2, description),
-        due_date          = COALESCE($3, due_date),
+        due_date          = $3,
         priority          = COALESCE($4, priority),
         color_label       = COALESCE($5, color_label),
         position          = COALESCE($6, position),
@@ -78,7 +78,7 @@ router.patch('/:id', async (req, res) => {
         task_type         = COALESCE($10, task_type),
         status_changed_at = CASE WHEN $7 IS NOT NULL AND $7 <> column_id THEN NOW() ELSE status_changed_at END
        WHERE id = $11 RETURNING *`,
-      [title, description, due_date, priority, color_label, position, column_id, course_id, course_id === null, task_type, id]
+      [title, description, due_date || null, priority, color_label, position, column_id, course_id, course_id === null, task_type, id]
     );
     res.json(result.rows[0]);
   } catch (err) {
